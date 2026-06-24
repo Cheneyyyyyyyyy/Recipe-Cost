@@ -41,13 +41,13 @@ export function RecipeMarginTable({ rows }: { rows: MarginRow[] }) {
         </thead>
         <tbody>
           {sorted.map((row) => {
-            const low = row.status.level === "low";
+            const flagged = row.status.level === "low" || row.status.level === "error";
             return (
               <tr
                 key={row.recipe.id}
                 className={cn(
                   "border-b border-slate-100 last:border-0",
-                  low ? "bg-red-50/40" : "hover:bg-slate-50"
+                  flagged ? "bg-red-50/40" : "hover:bg-slate-50"
                 )}
               >
                 <td className="px-5 py-2.5">

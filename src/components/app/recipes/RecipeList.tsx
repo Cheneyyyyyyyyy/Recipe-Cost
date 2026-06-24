@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { costRecipe } from "@/lib/costing";
-import { marginStatus } from "@/lib/margin";
+import { recipeStatus } from "@/lib/margin";
 import { formatCurrency } from "@/lib/format";
 import type { Recipe } from "@/lib/types";
 
@@ -18,7 +18,7 @@ export function RecipeList({ recipes }: { recipes: Recipe[] }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {recipes.map((recipe) => {
         const result = costRecipe(recipe, s.ingredientsById);
-        const status = marginStatus(result.foodCostPercent);
+        const status = recipeStatus(result, recipe);
         const count = recipe.items.length;
 
         return (

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useStore } from "@/lib/store";
 import { costRecipe } from "@/lib/costing";
-import { marginStatus, type MarginStatus } from "@/lib/margin";
+import { recipeStatus, type MarginStatus } from "@/lib/margin";
 import { formatPercent } from "@/lib/format";
 import { LOW_MARGIN_FOOD_COST_THRESHOLD } from "@/lib/constants";
 import type { Recipe } from "@/lib/types";
@@ -37,7 +37,7 @@ export function DashboardView() {
           costPerServing: result.costPerServing,
           foodCostPercent: result.foodCostPercent,
           marginPercent: result.marginPercent,
-          status: marginStatus(result.foodCostPercent),
+          status: recipeStatus(result, recipe),
         };
       }),
     [s.recipes, s.ingredientsById]
@@ -100,7 +100,7 @@ export function DashboardView() {
           </Card>
 
           <Card>
-            <CardHeader title="Recipes by margin" description="Best margin first; unpriced recipes last." />
+            <CardHeader title="Recipes by margin" description="Best margin first; unpriced or incomplete recipes last." />
             <CardBody className="p-0">
               <RecipeMarginTable rows={rows} />
             </CardBody>

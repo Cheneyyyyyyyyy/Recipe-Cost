@@ -15,22 +15,27 @@ export function CostBreakdown({
   recipe: Recipe;
 }) {
   const noYield = recipe.yield <= 0;
+  // Cost / serving is unattributable when items error or the yield is 0.
+  const perServingHint = result.hasErrors
+    ? "Resolve the line-item errors"
+    : noYield
+      ? "Set a yield greater than 0"
+      : `Makes ${recipe.yield} serving${recipe.yield === 1 ? "" : "s"}`;
 
   return (
     <Card>
       <CardHeader title="Cost breakdown" />
       <CardBody className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <Stat label="Total recipe cost" value={formatCurrency(result.totalCost)} />
+          <Stat
+            label={result.hasErrors ? "Cost so far" : "Total recipe cost"}
+            value={formatCurrency(result.totalCost)}
+          />
           <Stat
             label="Cost / serving"
-            value={noYield ? "—" : formatCurrency(result.costPerServing)}
-            tone={noYield ? "warn" : "default"}
-            hint={
-              noYield
-                ? "Set a yield greater than 0"
-                : `Makes ${recipe.yield} serving${recipe.yield === 1 ? "" : "s"}`
-            }
+            value={formatCurrency(result.costPerServing)}
+            tone={result.hasErrors || noYield ? "warn" : "default"}
+            hint={perServingHint}
           />
         </div>
         {result.hasErrors ? (

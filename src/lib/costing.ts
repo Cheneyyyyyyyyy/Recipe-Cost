@@ -134,7 +134,14 @@ export function costRecipe(
     }
   });
 
-  const perServing = recipe.yield > 0 ? totalCost / recipe.yield : null;
+  // When any line item can't be costed (deleted ingredient or dimension
+  // mismatch), `totalCost` is only a PARTIAL sum, so a per-serving figure
+  // derived from it would be silently understated. Report the per-serving
+  // figures as null (unknown) rather than a confident-but-wrong number — the
+  // `hasErrors` flag and per-item `error` strings tell the UI to prompt a fix.
+  // `totalCost` is left as the partial sum of the items that *did* cost, which
+  // the cost breakdown labels accordingly.
+  const perServing = !hasErrors && recipe.yield > 0 ? totalCost / recipe.yield : null;
   const hasSale = recipe.salePrice != null && recipe.salePrice > 0;
 
   const fcPercent =
