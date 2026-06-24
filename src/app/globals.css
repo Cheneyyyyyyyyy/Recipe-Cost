@@ -53,6 +53,14 @@
   .text-balance {
     text-wrap: balance;
   }
+  /* Hide scrollbars on horizontally-scrollable strips (e.g. mobile nav). */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
   /* Subtle dotted grid used on marketing surfaces. */
   .bg-grid {
     background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);

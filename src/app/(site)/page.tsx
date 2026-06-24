@@ -50,7 +50,7 @@ const FEATURES: { title: string; description: string; icon: React.ReactNode }[] 
   {
     title: "Margin dashboard",
     description:
-      "Every recipe ranked by margin, with low-margin dishes flagged automatically and a Recharts visual of the whole menu.",
+      "Every recipe ranked by margin, low-margin dishes flagged red, plus a popularity × margin menu-engineering quadrant of the whole menu.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
         <path d="M3 3v18h18" />
