@@ -14,6 +14,10 @@ import { DEFAULT_TARGET_FOOD_COST } from "@/lib/constants";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { Recipe } from "@/lib/types";
 
+/** Realistic food-cost band for the repricing slider (percent). */
+const TARGET_MIN = 10;
+const TARGET_MAX = 60;
+
 /** Sale-price input plus derived food-cost %, margin, and a suggested price. */
 export function MarginPanel({
   recipe,
@@ -54,6 +58,14 @@ export function MarginPanel({
       suggested = null;
     }
   }
+
+  // Slider lives in a realistic food-cost band; clamp the thumb but keep any
+  // exact typed value for the actual computation. fillPct paints the track.
+  const sliderValue = Math.min(TARGET_MAX, Math.max(TARGET_MIN, targetNum || DEFAULT_TARGET_FOOD_COST));
+  const fillPct = ((sliderValue - TARGET_MIN) / (TARGET_MAX - TARGET_MIN)) * 100;
+  const repriceable = result.costPerServing != null;
+  const applied =
+    suggested != null && recipe.salePrice === Math.round(suggested * 100) / 100;
 
   return (
     <Card>
@@ -107,50 +119,68 @@ export function MarginPanel({
           </p>
         ) : null}
 
-        {/* Suggested price tool */}
-        <div className="border-t border-slate-100 pt-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <Field
-              label="Target food cost %"
-              htmlFor={`target-${recipe.id}`}
-              className="sm:max-w-[10rem]"
-            >
-              <Input
-                id={`target-${recipe.id}`}
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step="any"
-                className="tabular-nums"
-                value={target}
-                onChange={(e) => setTarget(e.target.value)}
-              />
-            </Field>
-            <div className="sm:text-right">
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        {/* Interactive repricing — drag a target food cost, see the price live. */}
+        <div className="rounded-xl border border-brand-100 bg-brand-50/60 p-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <div className="text-xs font-medium uppercase tracking-wide text-brand-700">
+                Repricing
+              </div>
+              <p className="text-sm text-slate-600">Drag to a target food cost.</p>
+            </div>
+            <label htmlFor={`target-${recipe.id}`} className="text-right">
+              <span className="block text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                Target food cost
+              </span>
+              <span className="text-2xl font-bold tabular-nums text-brand-700">{sliderValue}%</span>
+            </label>
+          </div>
+
+          <input
+            id={`target-${recipe.id}`}
+            type="range"
+            min={TARGET_MIN}
+            max={TARGET_MAX}
+            step={1}
+            value={sliderValue}
+            disabled={!repriceable}
+            aria-label="Target food cost percent"
+            aria-valuetext={`${sliderValue}%`}
+            onChange={(e) => setTarget(e.target.value)}
+            className="range-brand mt-4"
+            style={{
+              background: `linear-gradient(to right, #0d9488 ${fillPct}%, #ccfbf1 ${fillPct}%)`,
+            }}
+          />
+          <div className="mt-1 flex justify-between text-[11px] tabular-nums text-slate-400">
+            <span>{TARGET_MIN}%</span>
+            <span>{TARGET_MAX}%</span>
+          </div>
+
+          <div className="mt-4 flex items-end justify-between gap-3 border-t border-brand-100 pt-4">
+            <div>
+              <div className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
                 Suggested price
               </div>
-              <div className="mt-1 text-2xl font-semibold tabular-nums text-ink">
+              <div className="text-3xl font-bold tabular-nums text-ink">
                 {formatCurrency(suggested)}
               </div>
               <div className="mt-0.5 text-xs text-slate-500">
                 {suggested != null
-                  ? `to hit a ${targetNum}% food cost`
-                  : "Needs a cost per serving and a target above 0"}
+                  ? `≈ ${formatPercent(100 - sliderValue, 0)} gross margin / serving`
+                  : "Add a cost per serving to reprice"}
               </div>
             </div>
-          </div>
-          <div className="mt-3">
             <Button
-              variant="secondary"
+              variant={applied ? "secondary" : "primary"}
               size="sm"
-              disabled={suggested == null}
+              disabled={suggested == null || applied}
               onClick={() => {
                 if (suggested == null) return;
                 s.updateRecipe(recipe.id, { salePrice: Math.round(suggested * 100) / 100 });
               }}
             >
-              Apply as sale price
+              {applied ? "Applied ✓" : "Apply as sale price"}
             </Button>
           </div>
         </div>
