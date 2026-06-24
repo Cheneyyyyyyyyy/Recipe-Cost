@@ -8,6 +8,21 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — Case study: walkthrough over a raster screenshot
+
+**Decision.** The case study leads with the costing math, a four-step usage
+**walkthrough**, a layered **architecture** diagram, and a "key decisions &
+trade-offs" grid. The product visual is a deterministic CSS/Tailwind mock (and
+the walkthrough), not an embedded PNG.
+
+**Rationale.** No headless-browser tooling is installed (no Playwright/Puppeteer,
+no Chromium), so a real screenshot would mean a heavy browser download. The brief
+allows "a screenshot **or** a short walkthrough"; the CSS mock + walkthrough are
+crisp at any resolution, never go stale against the real UI, and add no binary
+assets. A raster screenshot can be dropped into `public/` later and swapped in.
+
+---
+
 ## 2026-06-24 — Menu-engineering quadrant & a `popularity` field
 
 **Decision.** Added an optional `popularity?: number` (≈ orders/week) to `Recipe`

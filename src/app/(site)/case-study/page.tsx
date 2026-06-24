@@ -172,6 +172,82 @@ export default function CaseStudyPage() {
             </div>
           </Section>
 
+          {/* WALKTHROUGH */}
+          <Section eyebrow="Walkthrough" title="From ingredient to price in four steps">
+            <ol className="space-y-4">
+              <Step n={1} title="Stock the ingredient library">
+                Enter what you pay and how much you buy — &ldquo;$32 for 5&nbsp;kg of
+                mozzarella.&rdquo; Luma derives the per-gram cost instantly, so every recipe that
+                uses it inherits live pricing.
+              </Step>
+              <Step n={2} title="Build a recipe">
+                Add line items with quantities in whatever unit makes sense. Cost per serving,
+                total cost, and a per-line breakdown update as you type. Mixing dimensions (priced
+                per <Mono>kg</Mono>, used as <Mono>each</Mono>) is caught with a clear error rather
+                than a wrong number.
+              </Step>
+              <Step n={3} title="Reprice with the target-margin slider">
+                Drag a target food-cost&nbsp;% and watch the suggested sale price move in real time,
+                then apply it in one click. This is the &ldquo;what should I charge?&rdquo; answer
+                the whole product exists to give.
+              </Step>
+              <Step n={4} title="Read the dashboard">
+                Recipes are ranked by margin and low-margin dishes are flagged red, while a
+                popularity&nbsp;×&nbsp;margin quadrant sorts the menu into Stars, Plowhorses,
+                Puzzles, and Dogs — the classic menu-engineering view for deciding what to promote,
+                reprice, or cut.
+              </Step>
+            </ol>
+          </Section>
+
+          {/* ARCHITECTURE */}
+          <Section eyebrow="Architecture" title="A thin UI over a pure core">
+            <p className="mb-6 text-base leading-relaxed text-slate-600">
+              Luma is deliberately layered so the correctness-critical math has no idea React
+              exists. Data flows down; the engine is a leaf with zero dependencies on the UI or the
+              store.
+            </p>
+
+            <div className="space-y-2">
+              <Layer label="Presentation" sub="Next.js App Router · React · Tailwind">
+                Marketing site (<Mono>/</Mono>) and product (<Mono>/demo</Mono>): ingredient
+                library, recipe builder, repricing slider, dashboard &amp; quadrant.
+              </Layer>
+              <LayerArrow />
+              <Layer label="State" sub="React context · localStorage">
+                In-memory store with full CRUD; seeds demo data and persists edits across reloads.
+                No server, no API round-trips.
+              </Layer>
+              <LayerArrow />
+              <Layer label="Costing engine — pure" sub="src/lib/costing.ts · units.ts" highlight>
+                Framework-free functions: unit normalization, per-item and per-serving cost,
+                food-cost&nbsp;%, suggested price. Covered by 21 unit tests.
+              </Layer>
+            </div>
+
+            <h3 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Key decisions &amp; trade-offs
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DecisionCard title="Pure engine, not hooks" tradeoff="Results are passed as props">
+                Keeping the math out of React makes it unit-testable in isolation and impossible to
+                drift out of sync with the UI — one source of truth per formula.
+              </DecisionCard>
+              <DecisionCard title="localStorage, not a database" tradeoff="No multi-device sync">
+                A zero-friction demo with nothing to deploy but the app itself. A real DB is a
+                documented, deliberate stretch rather than MVP scope.
+              </DecisionCard>
+              <DecisionCard title="Errors as data, not exceptions" tradeoff="Callers check flags">
+                <Mono>costRecipe</Mono> returns nulls plus error flags for deleted ingredients and
+                cross-dimension units, so the interface stays live and honest while you edit.
+              </DecisionCard>
+              <DecisionCard title="Base-unit normalization" tradeoff="One conversion layer to own">
+                Every quantity becomes <Mono>g</Mono>/<Mono>ml</Mono>/<Mono>each</Mono> before any
+                arithmetic, so every sum and comparison is apples-to-apples.
+              </DecisionCard>
+            </div>
+          </Section>
+
           {/* ENGINEERING NOTES */}
           <Section eyebrow="Engineering notes" title="How it's built">
             <ul className="space-y-3">
@@ -181,12 +257,18 @@ export default function CaseStudyPage() {
                 and engine.
               </CheckItem>
               <CheckItem>
-                20 unit tests cover the costing math — base-unit conversion, per-serving cost,
-                food-cost %, suggested price, and every rejected/edge case.
+                21 unit tests cover the costing math — base-unit conversion, per-serving cost,
+                food-cost %, suggested price, and every rejected/edge case (including the
+                partial-total guard for uncostable line items).
               </CheckItem>
               <CheckItem>
-                Recharts powers the dashboard&apos;s margin visual; recipes are sorted by margin and
-                low-margin dishes are flagged automatically.
+                Recharts powers two dashboard visuals — a food-cost bar chart and the
+                popularity&nbsp;×&nbsp;margin menu-engineering quadrant — with low-margin dishes
+                flagged automatically.
+              </CheckItem>
+              <CheckItem>
+                A live target-margin slider reverses the costing math to suggest a sale price for
+                any food-cost % and applies it in one click.
               </CheckItem>
               <CheckItem>
                 State is plain React context backed by localStorage — no database, no auth, no API
@@ -396,5 +478,85 @@ function LegendDot({ className, label }: { className: string; label: string }) {
       <span className={`h-2.5 w-2.5 rounded-full ${className}`} />
       {label}
     </span>
+  );
+}
+
+function Step({
+  n,
+  title,
+  children,
+}: {
+  n: number;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-600 text-sm font-semibold text-white">
+        {n}
+      </span>
+      <div>
+        <h3 className="text-base font-semibold text-ink">{title}</h3>
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">{children}</p>
+      </div>
+    </li>
+  );
+}
+
+function Layer({
+  label,
+  sub,
+  highlight = false,
+  children,
+}: {
+  label: string;
+  sub: string;
+  highlight?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`rounded-2xl border p-4 shadow-sm ${
+        highlight ? "border-brand-200 bg-brand-50/60" : "border-slate-200 bg-white"
+      }`}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+        <h3 className={`text-sm font-semibold ${highlight ? "text-brand-700" : "text-ink"}`}>
+          {label}
+        </h3>
+        <span className="font-mono text-xs text-slate-400">{sub}</span>
+      </div>
+      <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{children}</p>
+    </div>
+  );
+}
+
+function LayerArrow() {
+  return (
+    <div className="flex justify-center text-slate-300" aria-hidden>
+      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+        <path d="M10 4v12M5 11l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
+function DecisionCard({
+  title,
+  tradeoff,
+  children,
+}: {
+  title: string;
+  tradeoff: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h4 className="text-sm font-semibold text-ink">{title}</h4>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600">{children}</p>
+      <p className="mt-3 text-xs text-slate-500">
+        <span className="font-medium text-slate-600">Trade-off:</span> {tradeoff}
+      </p>
+    </div>
   );
 }
