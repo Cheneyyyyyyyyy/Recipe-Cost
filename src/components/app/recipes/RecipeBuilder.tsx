@@ -90,28 +90,7 @@ export function RecipeBuilder({ recipe }: { recipe: Recipe }) {
               }
             />
             <CardBody>
-              {!hasIngredients ? (
-                <p className="text-sm text-slate-500">
-                  No ingredients yet.{" "}
-                  <Link
-                    href="/app/ingredients"
-                    className="font-medium text-brand-700 hover:text-brand-600"
-                  >
-                    Add ingredients
-                  </Link>{" "}
-                  first, then build your recipe.
-                </p>
-              ) : recipe.items.length === 0 ? (
-                <EmptyState
-                  title="No ingredients added"
-                  description="Add your first line item to start costing this recipe."
-                  action={
-                    <Button size="sm" onClick={addItem}>
-                      Add ingredient
-                    </Button>
-                  }
-                />
-              ) : (
+              {recipe.items.length > 0 ? (
                 <div>
                   {/* Column headers (desktop only) */}
                   <div className="hidden grid-cols-12 gap-3 border-b border-slate-100 pb-2 text-xs font-medium uppercase tracking-wide text-slate-500 sm:grid">
@@ -132,7 +111,37 @@ export function RecipeBuilder({ recipe }: { recipe: Recipe }) {
                       />
                     ))}
                   </div>
+                  {!hasIngredients ? (
+                    <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                      Your ingredient library is empty.{" "}
+                      <Link href="/app/ingredients" className="font-medium underline">
+                        Add ingredients
+                      </Link>{" "}
+                      to fix the rows above or add more.
+                    </p>
+                  ) : null}
                 </div>
+              ) : !hasIngredients ? (
+                <p className="text-sm text-slate-500">
+                  No ingredients yet.{" "}
+                  <Link
+                    href="/app/ingredients"
+                    className="font-medium text-brand-700 hover:text-brand-600"
+                  >
+                    Add ingredients
+                  </Link>{" "}
+                  first, then build your recipe.
+                </p>
+              ) : (
+                <EmptyState
+                  title="No ingredients added"
+                  description="Add your first line item to start costing this recipe."
+                  action={
+                    <Button size="sm" onClick={addItem}>
+                      Add ingredient
+                    </Button>
+                  }
+                />
               )}
             </CardBody>
           </Card>

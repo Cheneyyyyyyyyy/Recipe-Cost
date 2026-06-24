@@ -189,6 +189,27 @@ describe("costRecipe (aggregate breakdown)", () => {
     expect(r.items[0].error).toMatch(/deleted/i);
   });
 
+  it("does not report a confident per-serving cost when an item can't be costed", () => {
+    // One good item (egg, 4 each -> $2.00) plus one deleted ingredient. The
+    // partial total must not masquerade as a real per-serving cost/margin.
+    const r = costRecipe(
+      {
+        ...pasta,
+        items: [
+          { ingredientId: "egg", quantity: 4, unit: "each" },
+          { ingredientId: "deleted", quantity: 1, unit: "g" },
+        ],
+      },
+      map
+    );
+    expect(r.hasErrors).toBe(true);
+    expect(r.totalCost).toBeCloseTo(2, 6); // partial sum of the items that did cost
+    expect(r.costPerServing).toBeNull();
+    expect(r.foodCostPercent).toBeNull();
+    expect(r.marginPerServing).toBeNull();
+    expect(r.marginPercent).toBeNull();
+  });
+
   it("flags a dimension mismatch without throwing", () => {
     const r = costRecipe(
       { ...pasta, items: [{ ingredientId: "flour", quantity: 2, unit: "each" }] },

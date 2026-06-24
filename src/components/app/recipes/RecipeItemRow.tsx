@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { Select } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
@@ -24,14 +24,17 @@ export function RecipeItemRow({
 }) {
   const s = useStore();
 
-  // Quantity is held as a raw string so partial entries (e.g. "1.") don't churn to NaN.
+  // Quantity is held as a raw string so partial entries (e.g. "1.") don't churn
+  // to NaN. Re-sync during render (not in a post-paint effect) when the
+  // underlying item changes — e.g. a row above is removed and React reuses this
+  // instance for a different item — so the input never paints a stale value.
   const [qty, setQty] = useState(() => String(item.quantity));
-  useEffect(() => {
-    // Re-sync only when the stored value diverges from what's displayed (e.g. row reorder).
+  const [syncedQty, setSyncedQty] = useState(item.quantity);
+  if (item.quantity !== syncedQty) {
+    setSyncedQty(item.quantity);
     const parsed = qty === "" ? 0 : Number(qty);
     if (parsed !== item.quantity) setQty(String(item.quantity));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item.quantity]);
+  }
 
   const ingredient = result.ingredient;
   const missing = ingredient == null;
@@ -55,6 +58,7 @@ export function RecipeItemRow({
       <div className="sm:col-span-5">
         <label className="mb-1 block text-xs font-medium text-slate-500 sm:hidden">Ingredient</label>
         <Select
+          aria-label="Ingredient"
           value={item.ingredientId}
           onChange={(e) => {
             const next = s.getIngredient(e.target.value);
@@ -76,6 +80,7 @@ export function RecipeItemRow({
       <div className="sm:col-span-2">
         <label className="mb-1 block text-xs font-medium text-slate-500 sm:hidden">Qty</label>
         <Input
+          aria-label="Quantity"
           type="number"
           inputMode="decimal"
           min={0}
@@ -95,6 +100,7 @@ export function RecipeItemRow({
       <div className="sm:col-span-2">
         <label className="mb-1 block text-xs font-medium text-slate-500 sm:hidden">Unit</label>
         <Select
+          aria-label="Unit"
           value={item.unit}
           onChange={(e) => s.updateRecipeItem(recipeId, index, { unit: e.target.value as Unit })}
         >

@@ -32,6 +32,9 @@ export default function RecipePage() {
 
   return (
     <div>
+      {/* Single top-level heading for the page; the visible name is the editable
+          input inside the builder, so this is screen-reader only. */}
+      <h1 className="sr-only">{recipe.name || "Untitled recipe"}</h1>
       <div className="mb-4">
         <Link
           href="/app/recipes"

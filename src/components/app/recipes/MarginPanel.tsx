@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Input } from "@/components/ui/Input";
 import { suggestedPrice, type RecipeCostResult } from "@/lib/costing";
-import { marginStatus } from "@/lib/margin";
+import { recipeStatus } from "@/lib/margin";
 import { DEFAULT_TARGET_FOOD_COST } from "@/lib/constants";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { Recipe } from "@/lib/types";
@@ -41,7 +41,7 @@ export function MarginPanel({
   const [target, setTarget] = useState(String(DEFAULT_TARGET_FOOD_COST));
   const targetNum = target === "" ? 0 : Number(target);
 
-  const status = marginStatus(result.foodCostPercent);
+  const status = recipeStatus(result, recipe);
   const statTone = status.tone === "neutral" ? "default" : status.tone;
 
   // suggestedPrice throws on a non-positive target, so only compute when guarded.
@@ -97,7 +97,11 @@ export function MarginPanel({
           <Stat label="Margin %" value={formatPercent(result.marginPercent)} />
         </div>
 
-        {recipe.salePrice == null ? (
+        {result.hasErrors ? (
+          <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
+            Some line items can&apos;t be costed — fix the rows above to price this recipe.
+          </p>
+        ) : recipe.salePrice == null ? (
           <p className="text-xs text-slate-500">
             Enter a sale price to see food-cost % and margin.
           </p>

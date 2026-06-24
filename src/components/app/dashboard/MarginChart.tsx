@@ -23,9 +23,12 @@ const BAR_COLORS: Record<MarginLevel, string> = {
   watch: "#f59e0b",
   low: "#ef4444",
   unknown: "#94a3b8",
+  error: "#ef4444",
+  "no-yield": "#f59e0b",
 };
 
 interface ChartDatum {
+  id: string;
   name: string;
   foodCostPercent: number;
   level: MarginLevel;
@@ -64,10 +67,15 @@ export function MarginChart({ rows }: { rows: MarginRow[] }) {
   const data: ChartDatum[] = rows
     .filter((r) => r.foodCostPercent != null)
     .map((r) => ({
+      id: r.recipe.id,
       name: r.recipe.name,
       foodCostPercent: r.foodCostPercent as number,
       level: r.status.level,
     }));
+
+  // Recipe names aren't unique (e.g. two "Untitled recipe"), so chart by the
+  // stable id and map back to the name only for axis labels.
+  const nameById = new Map(data.map((d) => [d.id, d.name]));
 
   if (data.length === 0) {
     return (
@@ -91,13 +99,13 @@ export function MarginChart({ rows }: { rows: MarginRow[] }) {
         <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 24 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
           <XAxis
-            dataKey="name"
+            dataKey="id"
             interval={0}
             angle={-25}
             textAnchor="end"
             height={70}
             tick={{ fontSize: 12, fill: "#64748b" }}
-            tickFormatter={(value: string) => truncate(value)}
+            tickFormatter={(value: string) => truncate(nameById.get(value) ?? value)}
             tickLine={false}
             axisLine={{ stroke: "#e2e8f0" }}
           />
@@ -123,7 +131,7 @@ export function MarginChart({ rows }: { rows: MarginRow[] }) {
           />
           <Bar dataKey="foodCostPercent" radius={[4, 4, 0, 0]} maxBarSize={56}>
             {data.map((d) => (
-              <Cell key={d.name} fill={BAR_COLORS[d.level]} />
+              <Cell key={d.id} fill={BAR_COLORS[d.level]} />
             ))}
           </Bar>
         </BarChart>
