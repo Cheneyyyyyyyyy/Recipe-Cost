@@ -45,6 +45,7 @@ export const SEED_RECIPES: Recipe[] = [
     name: "Margherita Pizza",
     yield: 1,
     salePrice: 14,
+    popularity: 120, // Star: popular + high margin
     items: [
       { ingredientId: "ing-flour", quantity: 250, unit: "g" },
       { ingredientId: "ing-passata", quantity: 100, unit: "ml" },
@@ -59,6 +60,7 @@ export const SEED_RECIPES: Recipe[] = [
     name: "Spaghetti Carbonara",
     yield: 2,
     salePrice: 9,
+    popularity: 80, // Plowhorse: popular but thinner margin per serving
     items: [
       { ingredientId: "ing-spaghetti", quantity: 200, unit: "g" },
       { ingredientId: "ing-guanciale", quantity: 100, unit: "g" },
@@ -73,6 +75,7 @@ export const SEED_RECIPES: Recipe[] = [
     name: "Classic Cheeseburger",
     yield: 1,
     salePrice: 12,
+    popularity: 95, // Star: popular + high margin
     items: [
       { ingredientId: "ing-beef", quantity: 180, unit: "g" },
       { ingredientId: "ing-bun", quantity: 1, unit: "each" },
@@ -84,6 +87,7 @@ export const SEED_RECIPES: Recipe[] = [
     name: "Caesar Salad",
     yield: 1,
     salePrice: 11,
+    popularity: 55, // Puzzle: high margin but lower volume
     items: [
       { ingredientId: "ing-romaine", quantity: 1, unit: "each" },
       { ingredientId: "ing-caesar", quantity: 60, unit: "ml" },
@@ -96,6 +100,7 @@ export const SEED_RECIPES: Recipe[] = [
     name: "Tiramisu (tray of 6)",
     yield: 6,
     salePrice: 6,
+    popularity: 35, // Dog: low volume + low margin (food cost ~37%, flagged)
     items: [
       { ingredientId: "ing-mascarpone", quantity: 500, unit: "g" },
       { ingredientId: "ing-ladyfingers", quantity: 300, unit: "g" },

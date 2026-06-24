@@ -27,4 +27,10 @@ export interface Recipe {
   yield: number;
   salePrice: number | null;
   items: RecipeItem[];
+  /**
+   * Approximate orders per week — demo sales data used only for the
+   * menu-engineering quadrant (popularity × margin). Optional; absent/0 for
+   * user-created recipes since there's no POS/sales integration in scope.
+   */
+  popularity?: number;
 }
