@@ -83,7 +83,7 @@ export default function CaseStudyPage() {
             tested so the numbers can be trusted.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/app">
+            <Link href="/demo">
               <Button size="md">Try the demo</Button>
             </Link>
             <a href={GITHUB_URL} target="_blank" rel="noreferrer">
@@ -275,7 +275,7 @@ export default function CaseStudyPage() {
             price update as you type — or read the source.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/app">
+            <Link href="/demo">
               <Button size="md">Try the demo</Button>
             </Link>
             <a href={GITHUB_URL} target="_blank" rel="noreferrer">

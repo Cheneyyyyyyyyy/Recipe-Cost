@@ -22,7 +22,7 @@ export function SiteNav() {
           >
             GitHub
           </a>
-          <Link href="/app">
+          <Link href="/demo">
             <Button size="sm">Try the demo</Button>
           </Link>
         </nav>

@@ -18,7 +18,7 @@ export function SiteFooter() {
           <Link href="/case-study" className="hover:text-ink">
             Case study
           </Link>
-          <Link href="/app" className="hover:text-ink">
+          <Link href="/demo" className="hover:text-ink">
             Demo
           </Link>
           <a

@@ -22,7 +22,7 @@ export function RecipeList({ recipes }: { recipes: Recipe[] }) {
         const count = recipe.items.length;
 
         return (
-          <Link key={recipe.id} href={`/app/recipes/${recipe.id}`} className="group block">
+          <Link key={recipe.id} href={`/demo/recipes/${recipe.id}`} className="group block">
             <Card className="flex h-full flex-col transition-shadow group-hover:shadow-md">
               <div className="flex items-start justify-between gap-3 px-5 pt-5">
                 <h3 className="font-semibold text-ink">{recipe.name}</h3>

@@ -52,7 +52,7 @@ export function RecipeMarginTable({ rows }: { rows: MarginRow[] }) {
               >
                 <td className="px-5 py-2.5">
                   <Link
-                    href={`/app/recipes/${row.recipe.id}`}
+                    href={`/demo/recipes/${row.recipe.id}`}
                     className="font-medium text-ink hover:text-brand-700"
                   >
                     {row.recipe.name}

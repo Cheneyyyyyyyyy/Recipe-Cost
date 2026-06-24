@@ -114,7 +114,7 @@ export function RecipeBuilder({ recipe }: { recipe: Recipe }) {
                   {!hasIngredients ? (
                     <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
                       Your ingredient library is empty.{" "}
-                      <Link href="/app/ingredients" className="font-medium underline">
+                      <Link href="/demo/ingredients" className="font-medium underline">
                         Add ingredients
                       </Link>{" "}
                       to fix the rows above or add more.
@@ -125,7 +125,7 @@ export function RecipeBuilder({ recipe }: { recipe: Recipe }) {
                 <p className="text-sm text-slate-500">
                   No ingredients yet.{" "}
                   <Link
-                    href="/app/ingredients"
+                    href="/demo/ingredients"
                     className="font-medium text-brand-700 hover:text-brand-600"
                   >
                     Add ingredients

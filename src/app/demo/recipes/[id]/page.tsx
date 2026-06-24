@@ -22,7 +22,7 @@ export default function RecipePage() {
         title="Recipe not found"
         description="This recipe may have been deleted, or the link is incorrect."
         action={
-          <Link href="/app/recipes">
+          <Link href="/demo/recipes">
             <Button>Back to recipes</Button>
           </Link>
         }
@@ -37,7 +37,7 @@ export default function RecipePage() {
       <h1 className="sr-only">{recipe.name || "Untitled recipe"}</h1>
       <div className="mb-4">
         <Link
-          href="/app/recipes"
+          href="/demo/recipes"
           className="text-sm font-medium text-slate-500 hover:text-ink"
         >
           ← Back to recipes

@@ -34,10 +34,10 @@ A single deployable app serves both the marketing surface and the product:
 | --------------------- | ----------------------------------------------------- |
 | `/`                   | Portfolio landing page                                 |
 | `/case-study`         | Luma case study (the project framed as portfolio work) |
-| `/app`                | Luma dashboard (recipes by margin, low-margin flags)   |
-| `/app/ingredients`    | Ingredient library                                     |
-| `/app/recipes`        | Recipe list                                            |
-| `/app/recipes/[id]`   | Recipe builder                                         |
+| `/demo`                | Luma dashboard (recipes by margin, low-margin flags)   |
+| `/demo/ingredients`    | Ingredient library                                     |
+| `/demo/recipes`        | Recipe list                                            |
+| `/demo/recipes/[id]`   | Recipe builder                                         |
 
 ## Tech stack
 
