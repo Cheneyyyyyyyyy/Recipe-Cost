@@ -8,6 +8,22 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — Interactive repricing slider
+
+**Decision.** The recipe builder's pricing panel leads with a **target-food-cost
+slider** (10–60%, branded filled track in `globals.css` via `.range-brand`) that
+recomputes the suggested sale price live as you drag, shows the implied gross
+margin, and offers a one-click "Apply as sale price" that flips to "Applied ✓"
+and re-arms when the target changes. The old number box for the target was
+removed in favour of the slider.
+
+**Rationale.** "What should I charge?" is the product's headline value, so it
+should be tactile and instant. The 10–60% band covers realistic food costs; any
+exact value is still reachable in 1% steps. Computation stays on the tested
+`suggestedPrice` engine function — the slider only drives its input.
+
+---
+
 ## 2026-06-24 — `/demo` route & branch/PR workflow
 
 **Decision.** The Luma product moved from `/app` to **`/demo`** (route folder
