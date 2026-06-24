@@ -13,14 +13,17 @@ import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Stat } from "@/components/ui/Stat";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MarginChart } from "./MarginChart";
+import { MenuQuadrant } from "./MenuQuadrant";
 import { RecipeMarginTable } from "./RecipeMarginTable";
 
-/** Per-recipe margin summary shared by the chart and the table. */
+/** Per-recipe margin summary shared by the charts and the table. */
 export interface MarginRow {
   recipe: Recipe;
   costPerServing: number | null;
   foodCostPercent: number | null;
+  marginPerServing: number | null;
   marginPercent: number | null;
+  popularity: number;
   status: MarginStatus;
 }
 
@@ -36,7 +39,9 @@ export function DashboardView() {
           recipe,
           costPerServing: result.costPerServing,
           foodCostPercent: result.foodCostPercent,
+          marginPerServing: result.marginPerServing,
           marginPercent: result.marginPercent,
+          popularity: recipe.popularity ?? 0,
           status: recipeStatus(result, recipe),
         };
       }),
@@ -96,6 +101,16 @@ export function DashboardView() {
             />
             <CardBody>
               <MarginChart rows={rows} />
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Menu engineering"
+              description="Popularity × margin. Stars earn and sell; reprice or rework Plowhorses and Dogs."
+            />
+            <CardBody>
+              <MenuQuadrant rows={rows} />
             </CardBody>
           </Card>
 

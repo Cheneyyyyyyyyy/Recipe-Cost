@@ -8,6 +8,25 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — Menu-engineering quadrant & a `popularity` field
+
+**Decision.** Added an optional `popularity?: number` (≈ orders/week) to `Recipe`
+and a dashboard **popularity × margin scatter quadrant** (Recharts `ScatterChart`)
+that splits recipes into Stars / Plowhorses / Puzzles / Dogs at the menu's average
+popularity and average margin-per-serving. Dot colour reflects margin health
+(low-margin = red). Seed recipes carry hand-tuned sales so the demo lands one dish
+in each quadrant (Margherita & Cheeseburger = Stars, Carbonara = Plowhorse,
+Caesar = Puzzle, Tiramisu = Dog and red-flagged). y-axis is **contribution margin
+per serving** (the classic menu-engineering measure); only priced, error-free
+recipes with sales data are plotted.
+
+**Rationale.** The quadrant is the brief's sanctioned stretch and the most
+"product-like" view for the sales story. `popularity` is optional because there's
+no POS/sales integration in scope — it's seeded demo data; user-created recipes
+(no sales) simply don't appear on the quadrant until they have a price and volume.
+
+---
+
 ## 2026-06-24 — Interactive repricing slider
 
 **Decision.** The recipe builder's pricing panel leads with a **target-food-cost
