@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-ink antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /* Hide number-input spinners for a cleaner look; users type values directly. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* Subtle dotted grid used on marketing surfaces. */
+  .bg-grid {
+    background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
