@@ -117,7 +117,7 @@ export default function HomePage() {
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/app" className="sm:w-auto">
+                <Link href="/demo" className="sm:w-auto">
                   <Button size="md" className="w-full sm:w-auto">
                     Try the live demo
                   </Button>
@@ -381,7 +381,7 @@ export default function HomePage() {
                 per-plate cost, food-cost %, and suggested pricing in action.
               </p>
             </div>
-            <Link href="/app" className="shrink-0">
+            <Link href="/demo" className="shrink-0">
               <Button
                 variant="secondary"
                 size="md"

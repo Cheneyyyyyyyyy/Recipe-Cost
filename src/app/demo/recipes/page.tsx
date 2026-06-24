@@ -13,7 +13,7 @@ export default function RecipesPage() {
 
   const createRecipe = () => {
     const r = s.addRecipe({ name: "Untitled recipe", yield: 1, salePrice: null, items: [] });
-    router.push(`/app/recipes/${r.id}`);
+    router.push(`/demo/recipes/${r.id}`);
   };
 
   return (

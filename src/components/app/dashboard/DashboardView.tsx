@@ -64,7 +64,7 @@ export function DashboardView() {
           description="Build a recipe to see its cost per serving, food-cost %, and margin ranked here."
           action={
             <Link
-              href="/app/recipes"
+              href="/demo/recipes"
               className="inline-flex h-10 items-center justify-center rounded-lg bg-brand-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-700"
             >
               Go to recipes

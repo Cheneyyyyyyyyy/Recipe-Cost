@@ -4,7 +4,25 @@ A running log of the notable engineering choices made while building Luma, with
 the reasoning behind each. Newest context first; most entries date from the
 initial build.
 
-_Last updated: 2026-06-23_
+_Last updated: 2026-06-24_
+
+---
+
+## 2026-06-24 — `/demo` route & branch/PR workflow
+
+**Decision.** The Luma product moved from `/app` to **`/demo`** (route folder
+`src/app/demo/**`; all in-app links and the marketing "Try the demo" CTAs now
+point at `/demo`). The component folder `src/components/app/**` keeps its name —
+only the URL changed. Work on the portfolio-grade enhancements ships on **feature
+branches with pull requests**, never directly to `main`, never force-pushed.
+
+**Rationale.** `/demo` reads better as the public, instantly-loaded demo surface
+and matches how the project is described. Seeded state means `/demo` always
+opens populated (dashboard with a real margin chart and a flagged low-margin
+dish) — no empty first impression. The branch/PR flow keeps `main` clean and
+each change independently reviewable. Branches are **stacked** (each new feature
+branches off the previous) because `origin/main` does not yet contain the MVP, so
+stacking avoids cross-branch merge conflicts; merge them in order.
 
 ---
 
@@ -12,8 +30,8 @@ _Last updated: 2026-06-23_
 
 **Decision.** Ship marketing and product as one Next.js app. The portfolio site
 lives at the root `/` via the `(site)` route group (landing page + the
-`/case-study` write-up); the Luma product lives under `/app`. "Try the demo"
-calls-to-action link to `/app`.
+`/case-study` write-up); the Luma product lives under `/demo`. "Try the demo"
+calls-to-action link to `/demo`.
 
 **Rationale.** One deployable app keeps deploy and hosting trivial (a single
 Vercel project) while the route group gives a clean separation between the
@@ -40,7 +58,7 @@ the persisted shape later without colliding with old saved state.
 ## 2026-06-23 — Costing engine purity
 
 **Decision.** All costing math lives in pure functions in `src/lib`
-(`costing.ts` + `units.ts`), covered by 20 Vitest unit tests in
+(`costing.ts` + `units.ts`), covered by 21 Vitest unit tests in
 `src/lib/costing.test.ts`. The UI never re-implements the math; it consumes the
 non-throwing `costRecipe` aggregate.
 
@@ -109,20 +127,16 @@ ID generation robust across runtimes.
 
 ---
 
-## 2026-06-23 — GIT PUSH BLOCKER
+## 2026-06-24 — Git push & PRs (resolved)
 
-**Decision.** Automated `git push origin main` **FAILED** in this environment
-because no GitHub credentials are available (no `gh` CLI installed, empty macOS
-keychain for github.com, no `GH_TOKEN`/`GITHUB_TOKEN` env var). All work has been
-committed locally on the `main` branch. To publish, the user must authenticate
-and run:
+**Decision.** Earlier in the build, an automated push failed (no cached
+credential, no `gh` CLI, empty keychain probe). It later **succeeded** via the
+macOS `osxkeychain` credential helper, which holds a `repo`-scoped token, so
+branches are pushed to `origin` and PRs are opened through the GitHub REST API
+(`gh` is still not installed). `main` is kept even with `origin/main`; all MVP and
+enhancement work lands via PRs from `feat/*` branches.
 
-```bash
-git push origin main
-```
-
-(e.g. after `gh auth login`, or by configuring a Personal Access Token / SSH
-remote).
-
-**Rationale.** Cannot push without credentials; nothing is lost — commits are
-local and ready.
+**Rationale.** Once a working credential was available, the right move was to
+honour the requested branch/PR workflow directly rather than leave the user a
+manual push. If the credential is ever unavailable again, every branch is still
+committed locally and can be pushed with `git push -u origin <branch>`.

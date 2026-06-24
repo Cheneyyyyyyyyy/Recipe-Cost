@@ -7,13 +7,13 @@ import { cn } from "../ui/cn";
 import { useStore } from "@/lib/store";
 
 const LINKS = [
-  { href: "/app", label: "Dashboard" },
-  { href: "/app/ingredients", label: "Ingredients" },
-  { href: "/app/recipes", label: "Recipes" },
+  { href: "/demo", label: "Dashboard" },
+  { href: "/demo/ingredients", label: "Ingredients" },
+  { href: "/demo/recipes", label: "Recipes" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/app") return pathname === "/app";
+  if (href === "/demo") return pathname === "/demo";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -25,7 +25,7 @@ export function AppNav() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex items-center gap-6">
-          <Logo href="/app" />
+          <Logo href="/demo" />
           <nav className="flex items-center gap-1">
             {LINKS.map((link) => (
               <Link
