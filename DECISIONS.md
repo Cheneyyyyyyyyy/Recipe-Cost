@@ -8,6 +8,22 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — Polish pass (a11y, mobile, validation)
+
+**Decision.** Cross-route polish: a "Skip to content" link + focusable
+`<main id="content">` in both layouts; the app nav becomes a horizontally
+scrollable strip on narrow screens (`.no-scrollbar`) so it never overflows;
+landing feature copy updated to mention the menu quadrant. Existing strengths
+were left intact — guarded form validation with touched-state errors and a live
+unit-cost preview (`IngredientForm`), dual empty states (zero vs. no filter
+match), per-route `h1`s, labelled controls, and an escapable modal.
+
+**Rationale.** The surfaces were already solid from the adversarial review, so the
+polish pass added the few genuine cross-route gaps (keyboard skip-link, small-screen
+nav overflow) rather than churn working code.
+
+---
+
 ## 2026-06-24 — Case study: walkthrough over a raster screenshot
 
 **Decision.** The case study leads with the costing math, a four-step usage
