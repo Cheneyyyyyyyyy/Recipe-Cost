@@ -8,6 +8,41 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — V2 Phase 1: free menu audit system
+
+**Decision.** Built the door-opener audit feature on top of the V1 engine:
+
+- **New typed data layer** (`types.ts`): `Restaurant`, `MenuAnalysis`/`MenuAnalysisItem`,
+  `CompetitorPricing`, `SeasonalPattern`, `Scenario`, plus `DishCategory`,
+  `Neighborhood`, `RestaurantType`/`Status` enums — field names mirror
+  PROJECT_BRIEF_V2 §4.
+- **Estimated cost DB** (`data/estimatedCosts.ts`, ~115 Bay-Area ingredients) +
+  **dish templates** (`data/dishTemplates.ts`) drive a pure **dish cost
+  estimator** (`estimator.ts`). Template quantities are expressed in each
+  ingredient's own unit so cost = Σ(qty × unitCost) with no conversion layer.
+- **Audit engine** (`audit.ts`): `analyzeMenu()` is pure/deterministic —
+  estimates each dish, flags it (underwater >35% FC, healthy, overpriced),
+  compares to the corridor, and emits ranked recommendations + a monthly-upside
+  headline. Tested (`estimator.test.ts`, `audit.test.ts`, +21 new tests).
+- **Competitor + seasonality seed** (`data/competitorPricing.ts` 60 corridor×category
+  rows; `data/seasonality.ts` Berkeley academic calendar with a specific-window
+  `seasonForMonth`).
+- **Store** extended with restaurants/analyses/scenarios; storage key bumped to
+  `luma.v2` (old `luma.v1` ignored, falls back to seed). Seeded 3 complete demo
+  restaurants (`auditSeed.ts`).
+- **UI**: `/demo/audits` hub, `/demo/audits/new` builder with live analysis,
+  `/demo/audits/[id]` workspace (edit + pipeline status), and a print one-pager.
+
+**PDF export = print CSS, not a PDF library.** The audit report is a dedicated
+route (`/demo/audits/[id]/report`) styled for print (`print:` Tailwind variants;
+AppNav is `print:hidden`) with a "Print / Save as PDF" button calling
+`window.print()`. Chosen over `@react-pdf/renderer` / `html2canvas+jsPDF`: zero
+new dependencies (consistent with the V1 stance), crisp **vector** text instead
+of a rasterised canvas, full control via CSS, and reliable on Vercel. A library
+can be added later if programmatic/server-side PDF generation is needed.
+
+---
+
 ## 2026-06-24 — Polish pass (a11y, mobile, validation)
 
 **Decision.** Cross-route polish: a "Skip to content" link + focusable

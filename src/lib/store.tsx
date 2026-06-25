@@ -8,15 +8,31 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { Ingredient, Recipe, RecipeItem } from "./types";
+import type {
+  Ingredient,
+  MenuAnalysis,
+  MenuAnalysisItem,
+  Recipe,
+  RecipeItem,
+  Restaurant,
+  Scenario,
+} from "./types";
 import { indexIngredients } from "./costing";
 import { freshSeedIngredients, freshSeedRecipes } from "./seed";
+import { freshSeedAnalyses, freshSeedRestaurants } from "./auditSeed";
 
-const STORAGE_KEY = "luma.v1";
+const STORAGE_KEY = "luma.v2";
 
 interface PersistShape {
   ingredients: Ingredient[];
   recipes: Recipe[];
+  restaurants: Restaurant[];
+  menuAnalyses: MenuAnalysis[];
+  scenarios: Scenario[];
+}
+
+function nowIso(): string {
+  return new Date().toISOString();
 }
 
 export interface StoreValue {
@@ -46,6 +62,30 @@ export interface StoreValue {
   updateRecipeItem(recipeId: string, index: number, patch: Partial<RecipeItem>): void;
   removeRecipeItem(recipeId: string, index: number): void;
 
+  // ---- V2: restaurants, audits & scenarios ----
+  restaurants: Restaurant[];
+  menuAnalyses: MenuAnalysis[];
+  scenarios: Scenario[];
+
+  getRestaurant(id: string): Restaurant | undefined;
+  addRestaurant(data: Omit<Restaurant, "id" | "createdAt">): Restaurant;
+  updateRestaurant(id: string, data: Partial<Omit<Restaurant, "id" | "createdAt">>): void;
+  /** Deletes the restaurant and any of its analyses + scenarios. */
+  deleteRestaurant(id: string): void;
+
+  /** Most recent analysis for a restaurant, if any. */
+  getLatestAnalysis(restaurantId: string): MenuAnalysis | undefined;
+  getAnalysesForRestaurant(restaurantId: string): MenuAnalysis[];
+  /**
+   * Replace the latest analysis for a restaurant (or create one). Also advances
+   * the restaurant's status to at least "audited".
+   */
+  saveAnalysis(restaurantId: string, items: MenuAnalysisItem[]): MenuAnalysis;
+
+  getScenariosForRestaurant(restaurantId: string): Scenario[];
+  addScenario(data: Omit<Scenario, "id" | "createdAt">): Scenario;
+  deleteScenario(id: string): void;
+
   /** Restore the original seeded demo data. */
   resetToSeed(): void;
   /** False until localStorage has been read on the client (avoids hydration flashes). */
@@ -65,6 +105,9 @@ function newId(prefix: string): string {
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [ingredients, setIngredients] = useState<Ingredient[]>(() => freshSeedIngredients());
   const [recipes, setRecipes] = useState<Recipe[]>(() => freshSeedRecipes());
+  const [restaurants, setRestaurants] = useState<Restaurant[]>(() => freshSeedRestaurants());
+  const [menuAnalyses, setMenuAnalyses] = useState<MenuAnalysis[]>(() => freshSeedAnalyses());
+  const [scenarios, setScenarios] = useState<Scenario[]>(() => []);
   const [hydrated, setHydrated] = useState(false);
 
   // Load persisted state once on mount.
@@ -72,11 +115,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as PersistShape;
+        const parsed = JSON.parse(raw) as Partial<PersistShape>;
         if (Array.isArray(parsed.ingredients) && Array.isArray(parsed.recipes)) {
           setIngredients(parsed.ingredients);
           setRecipes(parsed.recipes);
         }
+        if (Array.isArray(parsed.restaurants)) setRestaurants(parsed.restaurants);
+        if (Array.isArray(parsed.menuAnalyses)) setMenuAnalyses(parsed.menuAnalyses);
+        if (Array.isArray(parsed.scenarios)) setScenarios(parsed.scenarios);
       }
     } catch {
       // Corrupt storage — fall back to the in-memory seed already in state.
@@ -88,12 +134,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!hydrated) return;
     try {
-      const payload: PersistShape = { ingredients, recipes };
+      const payload: PersistShape = { ingredients, recipes, restaurants, menuAnalyses, scenarios };
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {
       // Storage full / unavailable — non-fatal for an in-memory MVP.
     }
-  }, [ingredients, recipes, hydrated]);
+  }, [ingredients, recipes, restaurants, menuAnalyses, scenarios, hydrated]);
 
   const ingredientsById = useMemo(() => indexIngredients(ingredients), [ingredients]);
 
@@ -179,9 +225,103 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  // ---- V2: restaurants ----
+  const getRestaurant = useCallback(
+    (id: string) => restaurants.find((r) => r.id === id),
+    [restaurants]
+  );
+
+  const addRestaurant = useCallback((data: Omit<Restaurant, "id" | "createdAt">) => {
+    const created: Restaurant = { ...data, id: newId("rest"), createdAt: nowIso() };
+    setRestaurants((prev) => [...prev, created]);
+    return created;
+  }, []);
+
+  const updateRestaurant = useCallback(
+    (id: string, data: Partial<Omit<Restaurant, "id" | "createdAt">>) => {
+      setRestaurants((prev) => prev.map((r) => (r.id === id ? { ...r, ...data } : r)));
+    },
+    []
+  );
+
+  const deleteRestaurant = useCallback((id: string) => {
+    setRestaurants((prev) => prev.filter((r) => r.id !== id));
+    setMenuAnalyses((prev) => prev.filter((a) => a.restaurantId !== id));
+    setScenarios((prev) => prev.filter((s) => s.restaurantId !== id));
+  }, []);
+
+  // ---- V2: analyses ----
+  const getAnalysesForRestaurant = useCallback(
+    (restaurantId: string) =>
+      menuAnalyses
+        .filter((a) => a.restaurantId === restaurantId)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+    [menuAnalyses]
+  );
+
+  const getLatestAnalysis = useCallback(
+    (restaurantId: string) => getAnalysesForRestaurant(restaurantId)[0],
+    [getAnalysesForRestaurant]
+  );
+
+  const saveAnalysis = useCallback(
+    (restaurantId: string, items: MenuAnalysisItem[]) => {
+      const existing = menuAnalyses
+        .filter((a) => a.restaurantId === restaurantId)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+
+      let saved: MenuAnalysis;
+      if (existing) {
+        saved = { ...existing, items, createdAt: nowIso() };
+        setMenuAnalyses((prev) => prev.map((a) => (a.id === existing.id ? saved : a)));
+      } else {
+        saved = {
+          id: newId("analysis"),
+          restaurantId,
+          items,
+          createdAt: nowIso(),
+        };
+        setMenuAnalyses((prev) => [...prev, saved]);
+      }
+
+      // Advance status: a prospect becomes "audited" once analysed.
+      setRestaurants((prev) =>
+        prev.map((r) =>
+          r.id === restaurantId && r.status === "prospect"
+            ? { ...r, status: "audited" }
+            : r
+        )
+      );
+      return saved;
+    },
+    [menuAnalyses]
+  );
+
+  // ---- V2: scenarios ----
+  const getScenariosForRestaurant = useCallback(
+    (restaurantId: string) =>
+      scenarios
+        .filter((s) => s.restaurantId === restaurantId)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+    [scenarios]
+  );
+
+  const addScenario = useCallback((data: Omit<Scenario, "id" | "createdAt">) => {
+    const created: Scenario = { ...data, id: newId("scn"), createdAt: nowIso() };
+    setScenarios((prev) => [...prev, created]);
+    return created;
+  }, []);
+
+  const deleteScenario = useCallback((id: string) => {
+    setScenarios((prev) => prev.filter((s) => s.id !== id));
+  }, []);
+
   const resetToSeed = useCallback(() => {
     setIngredients(freshSeedIngredients());
     setRecipes(freshSeedRecipes());
+    setRestaurants(freshSeedRestaurants());
+    setMenuAnalyses(freshSeedAnalyses());
+    setScenarios([]);
   }, []);
 
   const value = useMemo<StoreValue>(
@@ -201,6 +341,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       addRecipeItem,
       updateRecipeItem,
       removeRecipeItem,
+      restaurants,
+      menuAnalyses,
+      scenarios,
+      getRestaurant,
+      addRestaurant,
+      updateRestaurant,
+      deleteRestaurant,
+      getLatestAnalysis,
+      getAnalysesForRestaurant,
+      saveAnalysis,
+      getScenariosForRestaurant,
+      addScenario,
+      deleteScenario,
       resetToSeed,
       hydrated,
     }),
@@ -220,6 +373,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       addRecipeItem,
       updateRecipeItem,
       removeRecipeItem,
+      restaurants,
+      menuAnalyses,
+      scenarios,
+      getRestaurant,
+      addRestaurant,
+      updateRestaurant,
+      deleteRestaurant,
+      getLatestAnalysis,
+      getAnalysesForRestaurant,
+      saveAnalysis,
+      getScenariosForRestaurant,
+      addScenario,
+      deleteScenario,
       resetToSeed,
       hydrated,
     ]

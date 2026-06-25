@@ -8,6 +8,7 @@ import { useStore } from "@/lib/store";
 
 const LINKS = [
   { href: "/demo", label: "Dashboard" },
+  { href: "/demo/audits", label: "Audits" },
   { href: "/demo/ingredients", label: "Ingredients" },
   { href: "/demo/recipes", label: "Recipes" },
 ];
@@ -22,7 +23,7 @@ export function AppNav() {
   const { resetToSeed } = useStore();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur print:hidden">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3 sm:gap-6">
           <Logo href="/demo" />
