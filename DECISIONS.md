@@ -8,6 +8,17 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — V2 Phase 6: verify & ship
+
+**Decision.** Final pass: README rewritten for the V2 product + go-to-market +
+local run; the stale "pre-implementation" note in CLAUDE.md replaced with the
+real current state. Full gates green — `npm run build`, `npm run lint`,
+`npm test` (47 tests), `tsc --noEmit`. All 15 build routes prerender; a manual
+smoke test hits every route (incl. the 3 seeded demo restaurants and a
+missing-id, which degrades to a not-found empty state) — all 200.
+
+---
+
 ## 2026-06-24 — V2 Phase 5: site & pitch materials
 
 **Decision.** Pivoted the marketing site toward the go-to-market while keeping the
