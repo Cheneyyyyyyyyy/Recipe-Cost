@@ -14,7 +14,13 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MenuBuilder } from "./MenuBuilder";
 import { AuditAnalysis } from "./AuditAnalysis";
+import { ClientDetails } from "./ClientDetails";
 import { itemsToRows, rowsToInputs, type DraftRow } from "./draft";
+
+function formatDate(iso: string | undefined): string {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
 
 export function AuditWorkspace({ restaurantId }: { restaurantId: string }) {
   const s = useStore();
@@ -100,6 +106,9 @@ export function AuditWorkspace({ restaurantId }: { restaurantId: string }) {
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-500">Pipeline status</span>
             <Badge tone={statusTone(restaurant.status)}>{statusLabel(restaurant.status)}</Badge>
+            {latest && (
+              <span className="text-xs text-slate-400">Last analysed {formatDate(latest.createdAt)}</span>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <label htmlFor="status" className="text-sm text-slate-500">
@@ -155,6 +164,7 @@ export function AuditWorkspace({ restaurantId }: { restaurantId: string }) {
       </Card>
 
       <div className="space-y-6">
+        <ClientDetails restaurant={restaurant} />
         <MenuBuilder rows={rows} onChange={setRows} />
         {result && inputs.length > 0 ? (
           <AuditAnalysis result={result} restaurant={restaurant} />

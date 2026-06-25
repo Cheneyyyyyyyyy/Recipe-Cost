@@ -8,6 +8,26 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — V2 Phase 3: client pipeline (lightweight CRM)
+
+**Decision.** Added `/demo/clients` — a pipeline board grouping restaurants by
+status (prospect → audited → pitched → active → churned) with per-stage counts, a
+total-upside summary, and cards showing contact + notes preview + monthly upside.
+The **per-restaurant detail page is the audit workspace** (`/demo/audits/[id]`),
+now with an editable "Client details" card (contact name/email/phone, plates/day,
+notes — all persisted live via `updateRestaurant`) and a "Last analysed" stamp.
+
+**One restaurant surface, two lenses.** Rather than a separate CRM detail page,
+the workspace doubles as the client detail (audit + margins + recommendations +
+contact + notes + status + scenarios link), so there's a single place per
+restaurant. The Clients board and Audits hub are intentionally two entry lenses
+on the same restaurants (sales pipeline vs. run-an-audit), matching how the tool
+is actually used. Audit "history" is the current saved analysis (one per
+restaurant via upsert) surfaced with its date; full snapshot history was left
+out as low MVP value.
+
+---
+
 ## 2026-06-24 — V2 Phase 2: scenario modeling & seasonality
 
 **Decision.** Three additions on top of Phase 1:
