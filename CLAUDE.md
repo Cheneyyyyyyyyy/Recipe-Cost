@@ -4,7 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current state
 
-This repo is **pre-implementation**. The only substantive file is `PROJECT_BRIEF.md` — the full build spec for "Luma", a recipe-costing & menu-margin tool. There is no application code, `package.json`, or test suite yet. The first real task is to scaffold the app from the spec (`PROJECT_BRIEF.md` §9 has the ordered task breakdown). Read `PROJECT_BRIEF.md` in full before writing code; the sections below summarize the parts that are easy to get wrong.
+The app is **built** (V1 + V2). `PROJECT_BRIEF.md` is the original V1 spec;
+`PROJECT_BRIEF_V2.md` is the current spec (free menu audit, scenario modeling,
+client pipeline, Berkeley market intelligence) and `COLD_PITCH_PLAYBOOK.md` is
+the go-to-market context. `DECISIONS.md` logs the engineering choices per phase.
+
+Commands: `npm run dev`, `npm run build`, `npm run lint`, `npm test` (Vitest, 47
+tests). Data is an in-memory React-context store persisted to `localStorage`
+(`luma.v2`); no DB, no auth. PDF export is print CSS + `window.print()`.
+
+Key code: the pure engine is `src/lib/costing.ts`/`units.ts`; the audit layer is
+`src/lib/estimator.ts` + `audit.ts` + `scenario.ts` with seed data under
+`src/lib/data/`. Product routes live under `src/app/demo/**`, marketing under
+`src/app/(site)/**`. Read the relevant brief before changing the costing math.
 
 ## Intended tech stack (from the spec)
 
