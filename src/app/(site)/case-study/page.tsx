@@ -343,6 +343,56 @@ export default function CaseStudyPage() {
               Illustrative mock-up — the live demo renders this from seeded data.
             </p>
           </Section>
+
+          {/* THE PIVOT */}
+          <Section eyebrow="From demo to door-opener" title="Wrapping the engine in a real workflow">
+            <div className="space-y-4 text-base leading-relaxed text-slate-600">
+              <p>
+                The same costing engine now powers a <strong>free menu audit</strong>: enter a
+                Berkeley restaurant&apos;s public menu and Luma estimates each dish&apos;s food cost
+                from a built-in Bay-Area ingredient database, flags the underwater items, compares
+                prices to the corridor average, and exports a branded one-page PDF.
+              </p>
+              <p>
+                That audit is the cold-pitch deliverable — a concrete, data-backed reason to walk
+                into a restaurant. Around it sit a lightweight client pipeline, what-if scenario
+                modeling, and Berkeley market intelligence (competitor pricing by corridor and an
+                academic-calendar seasonality overlay).
+              </p>
+            </div>
+            <div className="mt-6">
+              <Link href="/demo/audits/new">
+                <Button size="md">Run a free audit</Button>
+              </Link>
+            </div>
+          </Section>
+
+          {/* RESULTS */}
+          <Section eyebrow="Results" title="Real restaurants, real numbers — coming soon">
+            <p className="mb-6 text-base leading-relaxed text-slate-600">
+              The first few Berkeley restaurants get the full setup free in exchange for permission
+              to publish their results here. These placeholders fill in with real before/after
+              numbers as those engagements land.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-5"
+                >
+                  <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                    Case study {i}
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    <ResultLine label="Dishes repriced" />
+                    <ResultLine label="Avg food cost" before="—" after="—" />
+                    <ResultLine label="Est. monthly gain" />
+                  </div>
+                  <p className="mt-4 text-xs text-slate-400">Awaiting first client results</p>
+                </div>
+              ))}
+            </div>
+          </Section>
         </div>
       </div>
 
@@ -468,6 +518,25 @@ function PreviewStat({
       <div className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</div>
       <div className={`mt-1 text-2xl font-semibold tabular-nums ${valueTone}`}>{value}</div>
       <div className="mt-0.5 text-xs text-slate-500">{hint}</div>
+    </div>
+  );
+}
+
+function ResultLine({
+  label,
+  before = "—",
+  after = "—",
+}: {
+  label: string;
+  before?: string;
+  after?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between text-sm">
+      <span className="text-slate-500">{label}</span>
+      <span className="tabular-nums text-slate-400">
+        {before} <span aria-hidden>→</span> {after}
+      </span>
     </div>
   );
 }
