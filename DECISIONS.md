@@ -8,6 +8,22 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — V2 Phase 4: market intelligence
+
+**Decision.** Two views under `/demo/market`:
+
+- **Competitor browser** (`/demo/market`) — low/avg/high price bands per dish
+  category for a chosen corridor, rendered as gradient `PriceBandBar`s. Picking a
+  restaurant pins the corridor to theirs and overlays a colour-coded dot for the
+  restaurant's average price in each category (below / at / above corridor),
+  directly answering "where does this restaurant sit vs. the market".
+- **Seasonality view** (`/demo/market/seasonality`) — current period highlighted,
+  a 12-month traffic strip (from `seasonForMonth` per month), and cards for every
+  calendar window with its traffic delta + recommendation. Current month computed
+  client-side (mount guard) like the dashboard card. "Market" nav entry added.
+
+---
+
 ## 2026-06-24 — V2 Phase 3: client pipeline (lightweight CRM)
 
 **Decision.** Added `/demo/clients` — a pipeline board grouping restaurants by
