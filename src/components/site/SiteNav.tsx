@@ -9,21 +9,31 @@ export function SiteNav() {
         <Logo />
         <nav className="flex items-center gap-1 sm:gap-2">
           <Link
+            href="/pricing"
+            className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-ink sm:block"
+          >
+            Pricing
+          </Link>
+          <Link
             href="/case-study"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-ink"
+            className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-ink sm:block"
           >
             Case study
           </Link>
-          <a
-            href="https://github.com/Cheneyyyyyyyyy/Recipe-Cost"
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href="/about"
             className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-ink sm:block"
           >
-            GitHub
-          </a>
-          <Link href="/demo">
-            <Button size="sm">Try the demo</Button>
+            About
+          </Link>
+          <Link
+            href="/demo"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-ink"
+          >
+            Demo
+          </Link>
+          <Link href="/demo/audits/new">
+            <Button size="sm">Free audit</Button>
           </Link>
         </nav>
       </div>

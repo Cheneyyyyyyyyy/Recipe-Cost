@@ -8,6 +8,27 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — V2 Phase 5: site & pitch materials
+
+**Decision.** Pivoted the marketing site toward the go-to-market while keeping the
+portfolio framing:
+
+- **Landing** — hero reframed for Berkeley restaurants with a primary "Get a free
+  menu audit" CTA (→ `/demo/audits/new`); added a 3-step "How it works" section;
+  final CTA band leads with the free audit. Existing problem/features/math
+  sections kept.
+- **Pricing page** (`/pricing`) — Free Audit ($0) → Full Setup ($199 one-time) →
+  Ongoing ($79/mo), with the "first few restaurants free for a case study" note.
+- **About page** (`/about`) — Ethan Chen bio (Berkeley data science student) +
+  contact + free-audit CTA.
+- **Case study** — added a "from demo to door-opener" pivot section and a
+  **Results** section with dashed placeholder cards for the first 2–3 real
+  restaurant case studies (before/after fields awaiting data).
+- **Nav/footer** — Pricing / Case study / About / Demo links; primary CTA is now
+  "Free audit". Section background alternation preserved.
+
+---
+
 ## 2026-06-24 — V2 Phase 4: market intelligence
 
 **Decision.** Two views under `/demo/market`:

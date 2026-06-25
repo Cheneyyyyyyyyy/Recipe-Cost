@@ -8,15 +8,21 @@ export function SiteFooter() {
         <div className="flex flex-col items-center gap-2 sm:items-start">
           <Logo />
           <p className="text-sm text-slate-500">
-            Recipe costing & menu margins, done right.
+            Menu profitability for independent Berkeley restaurants.
           </p>
         </div>
-        <div className="flex items-center gap-5 text-sm text-slate-500">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-slate-500">
           <Link href="/" className="hover:text-ink">
             Home
           </Link>
+          <Link href="/pricing" className="hover:text-ink">
+            Pricing
+          </Link>
           <Link href="/case-study" className="hover:text-ink">
             Case study
+          </Link>
+          <Link href="/about" className="hover:text-ink">
+            About
           </Link>
           <Link href="/demo" className="hover:text-ink">
             Demo

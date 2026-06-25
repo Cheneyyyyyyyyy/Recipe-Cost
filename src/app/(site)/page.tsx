@@ -103,7 +103,7 @@ export default function HomePage() {
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-medium uppercase tracking-wide text-brand-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-                Portfolio project — full-stack build
+                For independent Berkeley restaurants
               </span>
 
               <h1 className="text-balance mt-6 text-4xl font-semibold tracking-tight text-ink sm:text-5xl lg:text-6xl">
@@ -111,26 +111,26 @@ export default function HomePage() {
               </h1>
 
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
-                Luma turns your ingredient prices and recipes into instant per-plate cost,
-                food-cost %, and margin — then suggests a sale price for any target
-                food-cost % you set.
+                Luma reads your menu and shows which dishes are likely losing money, where you have
+                room to raise prices, and how you stack up against the rest of the corridor — then
+                hands you a clean one-page report. The first audit is free.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/demo" className="sm:w-auto">
+                <Link href="/demo/audits/new" className="sm:w-auto">
                   <Button size="md" className="w-full sm:w-auto">
-                    Try the live demo
+                    Get a free menu audit
                   </Button>
                 </Link>
-                <Link href="/case-study" className="sm:w-auto">
+                <Link href="/demo" className="sm:w-auto">
                   <Button variant="secondary" size="md" className="w-full sm:w-auto">
-                    Read the case study
+                    Try the live demo
                   </Button>
                 </Link>
               </div>
 
               <p className="mt-5 text-sm text-slate-500">
-                No sign-up. Seeded with real ingredients and recipes so you can click around
+                No sign-up. Pre-loaded with real Berkeley restaurants so you can click around
                 immediately.
               </p>
             </div>
@@ -196,6 +196,55 @@ export default function HomePage() {
                 <p className="text-base font-semibold tabular-nums text-brand-700">$10.67</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────── How it works ───────────────────────── */}
+      <section className="border-t border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+          <div className="max-w-2xl">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">How it works</p>
+            <h2 className="text-balance mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              A free margin analysis in three steps.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {[
+              {
+                step: "1",
+                title: "Enter the menu",
+                description:
+                  "Type or paste a restaurant's dishes, pick a category, and add the current price. Takes a couple of minutes.",
+              },
+              {
+                step: "2",
+                title: "See the analysis",
+                description:
+                  "Luma estimates each dish's food cost, flags the underwater ones, compares to corridor pricing, and ranks the fixes by dollar impact.",
+              },
+              {
+                step: "3",
+                title: "Hand over the report",
+                description:
+                  "Export a clean, branded one-page PDF — ready to print or email to the owner. That's the whole pitch.",
+              },
+            ].map((s) => (
+              <div key={s.step} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-sm font-semibold text-white">
+                  {s.step}
+                </span>
+                <h3 className="mt-4 text-base font-semibold text-ink">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{s.description}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <Link href="/demo/audits/new">
+              <Button>Run a free audit now</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -374,20 +423,20 @@ export default function HomePage() {
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <div>
               <h2 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Try Luma now.
+                Find out what your menu is really making.
               </h2>
               <p className="mt-3 max-w-xl text-base leading-relaxed text-brand-50">
-                Jump into the live demo — pre-loaded with ingredients and recipes — and see
-                per-plate cost, food-cost %, and suggested pricing in action.
+                Run a free margin audit on any menu in a couple of minutes — flagged dishes,
+                corridor pricing, and a one-page report you can hand to the owner.
               </p>
             </div>
-            <Link href="/demo" className="shrink-0">
+            <Link href="/demo/audits/new" className="shrink-0">
               <Button
                 variant="secondary"
                 size="md"
                 className="border-transparent bg-white text-brand-700 hover:bg-brand-50"
               >
-                Try the live demo
+                Get a free menu audit
               </Button>
             </Link>
           </div>
