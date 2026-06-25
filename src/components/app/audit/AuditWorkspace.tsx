@@ -81,6 +81,9 @@ export function AuditWorkspace({ restaurantId }: { restaurantId: string }) {
             <Link href="/demo/audits" className="text-sm font-medium text-slate-500 hover:text-ink">
               ← All audits
             </Link>
+            <Link href={`/demo/audits/${restaurant.id}/scenarios`}>
+              <Button variant="secondary">What-if scenarios</Button>
+            </Link>
             <Link href={`/demo/audits/${restaurant.id}/report`} target="_blank">
               <Button variant="secondary">Export PDF</Button>
             </Link>
@@ -127,6 +130,29 @@ export function AuditWorkspace({ restaurantId }: { restaurantId: string }) {
           You have unsaved changes. Save to update the exported report.
         </div>
       )}
+
+      {/* Bridge to the full costing system (V1 engine) once the pitch lands. */}
+      <Card className="mb-6 border-brand-100 bg-brand-50/40">
+        <CardBody className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-ink">Ready to go beyond estimates?</h2>
+            <p className="mt-0.5 max-w-2xl text-sm text-slate-600">
+              These costs are Bay-Area estimates. Once {restaurant.name} is a client, plug in their
+              real supplier prices and build true recipes to see exact per-plate margins.
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <Link href="/demo/ingredients">
+              <Button variant="secondary" size="sm">
+                Ingredient library
+              </Button>
+            </Link>
+            <Link href="/demo/recipes">
+              <Button size="sm">Build real recipes</Button>
+            </Link>
+          </div>
+        </CardBody>
+      </Card>
 
       <div className="space-y-6">
         <MenuBuilder rows={rows} onChange={setRows} />

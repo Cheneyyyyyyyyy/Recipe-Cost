@@ -15,6 +15,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { MarginChart } from "./MarginChart";
 import { MenuQuadrant } from "./MenuQuadrant";
 import { RecipeMarginTable } from "./RecipeMarginTable";
+import { SeasonalityCard } from "./SeasonalityCard";
 
 /** Per-recipe margin summary shared by the charts and the table. */
 export interface MarginRow {
@@ -93,6 +94,8 @@ export function DashboardView() {
               hint={`At or above ${LOW_MARGIN_FOOD_COST_THRESHOLD}% food cost`}
             />
           </div>
+
+          <SeasonalityCard />
 
           <Card>
             <CardHeader

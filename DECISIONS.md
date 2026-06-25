@@ -8,6 +8,35 @@ _Last updated: 2026-06-24_
 
 ---
 
+## 2026-06-24 — V2 Phase 2: scenario modeling & seasonality
+
+**Decision.** Three additions on top of Phase 1:
+
+- **Scenario engine** (`scenario.ts` + 5 tests). `scenarioImpact()` is pure and
+  works off the audit's analysed items (price + estimated cost) rather than a
+  separate recipe model, so any audited restaurant can be modelled. Three
+  scenario kinds (discriminated union): `ingredient-change` (bumps only dishes
+  whose template uses that ingredient, via the estimator's line breakdown),
+  `price-change` (across-the-board %), and `menu-change` (cut → volume 0,
+  promote → +25% volume). Returns per-dish before/after monthly margin + total
+  monthly impact.
+- **Scenario UI** at `/demo/audits/[id]/scenarios`: live controls, before/after
+  grouped Recharts bars, impact stats, and save/load/delete of named scenarios.
+  Linked from the audit workspace ("What-if scenarios").
+- **Seasonality overlay** on the dashboard (`SeasonalityCard`) using
+  `seasonForMonth(currentMonth)`. Rendered client-side after mount (month from
+  `new Date()`) to avoid any SSR/timezone hydration drift; links to the full
+  calendar view (built in Phase 4).
+
+**Task 8 (estimated → real costs) shipped as a product bridge, not a data join.**
+The V1 costing engine already computes true margins from real ingredient/recipe
+data. Rather than duplicate that by linking each audit item to a `Recipe` (a
+large model change for little MVP value), the workspace shows an "upgrade" card
+guiding the user to the existing ingredient library + recipe builder once a
+prospect becomes a client. The two systems share the same store and engine.
+
+---
+
 ## 2026-06-24 — V2 Phase 1: free menu audit system
 
 **Decision.** Built the door-opener audit feature on top of the V1 engine:
